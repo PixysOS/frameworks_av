@@ -538,7 +538,6 @@ Status CameraService::getCameraCharacteristics(const String16& cameraId,
         return STATUS_ERROR_FMT(ERROR_DISCONNECTED,
                                 "No camera device with ID \"%s\" currently available",
                                 String8(cameraId).string());
-
     }
 
     Status ret{};
@@ -3307,7 +3306,6 @@ void CameraService::updateStatus(StatusInternal status, const String8& cameraId,
                 cameraId.string());
         return;
     }
-    bool isHidden = isPublicallyHiddenSecureCamera(cameraId);
     bool supportsHAL3 = false;
     // supportsCameraApi also holds mInterfaceMutex, we can't call it in the
     // HIDL onStatusChanged wrapper call (we'll hold mStatusListenerLock and
@@ -3320,6 +3318,7 @@ void CameraService::updateStatus(StatusInternal status, const String8& cameraId,
                 __FUNCTION__, cameraId.string());
         return;
     }
+    bool isHidden = isPublicallyHiddenSecureCamera(cameraId);
     // Update the status for this camera state, then send the onStatusChangedCallbacks to each
     // of the listeners with both the mStatusStatus and mStatusListenerLock held
     state->updateStatus(status, cameraId, rejectSourceStates, [this, &isHidden, &supportsHAL3]
